@@ -371,11 +371,15 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      *
      * @param playlist the [Playlist] to bind.
      */
-    fun bind(playlist: Playlist) =
+    fun bind(playlist: Playlist) {
+        // Use the first song's cover instead of the collection of all covers
+        val firstSongCover = playlist.songs.firstOrNull()?.cover
+        
         bindImpl(
-            playlist.covers,
+            firstSongCover,
             context.getString(R.string.desc_playlist_image, playlist.name),
             R.drawable.ic_playlist_24)
+    }
 
     /**
      * Bind the covers of a generic list of [Song]s.
