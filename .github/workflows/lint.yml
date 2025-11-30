@@ -2,7 +2,7 @@ name: Android Lint
 
 on:
   push:
-    branches: []
+    branches: [dev]
   pull_request:
     branches: []
 
