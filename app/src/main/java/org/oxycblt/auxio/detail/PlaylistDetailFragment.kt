@@ -1,21 +1,3 @@
-/*
- * Copyright (c) 2023 Auxio Project
- * PlaylistDetailFragment.kt is part of Auxio.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
- 
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
@@ -189,9 +171,14 @@ class PlaylistDetailFragment :
             return
         }
         val binding = requireBinding()
-        binding.detailToolbarTitle.text = playlist.name.resolve(requireContext())
-        binding.detailEditToolbar.title =
-            getString(R.string.fmt_editing, playlist.name.resolve(requireContext()))
+        
+        // Split the playlist name by newlines for title and subtitle
+        val nameParts = playlist.name.resolve(requireContext()).split("\n", limit = 3)
+        val title = nameParts.getOrNull(0) ?: ""
+        val subtitle = nameParts.getOrNull(1) ?: ""
+        
+        binding.detailToolbarTitle.text = title
+        binding.detailEditToolbar.title = getString(R.string.fmt_editing, title)
 
         if (editedPlaylist != null) {
             L.d("Binding edited playlist image")
@@ -204,7 +191,14 @@ class PlaylistDetailFragment :
         }
 
         binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
-        binding.detailName.text = playlist.name.resolve(binding.context)
+        binding.detailName.text = title
+        
+        // Set the subtitle and hide if empty
+        binding.detailSubtitle.apply {
+            text = subtitle
+            isVisible = subtitle.isNotEmpty()
+        }
+        
         // Nothing about a playlist is applicable to the sub-head text.
         binding.detailSubhead.isVisible = false
 
