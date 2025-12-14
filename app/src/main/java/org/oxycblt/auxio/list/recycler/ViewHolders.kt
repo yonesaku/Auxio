@@ -281,16 +281,31 @@ class PlaylistViewHolder private constructor(private val binding: ItemParentBind
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(playlist: Playlist, listener: SelectableListListener<Playlist>) {
-        listener.bind(playlist, this, menuButton = binding.parentMenu)
-        binding.parentImage.bind(playlist)
-        binding.parentName.text = playlist.name.resolve(binding.context)
-        binding.parentInfo.text =
-            if (playlist.songs.isNotEmpty()) {
-                binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
-            } else {
-                binding.context.getString(R.string.def_song_count)
-            }
+    listener.bind(playlist, this, menuButton = binding.parentMenu)
+    binding.parentImage.bind(playlist)
+    
+    // Split the playlist name by newlines
+    val nameParts = playlist.name.resolve(binding.context).split("\n", limit = 3)
+    
+    // First line is the title
+    binding.parentName.text = nameParts.getOrNull(0) ?: ""
+    
+    // Second line (if exists) is the subtitle/description
+    val subtitle = nameParts.getOrNull(1) ?: ""
+    binding.parentSubtitle.apply {
+        text = subtitle
+        // Hide the subtitle view if there's no subtitle
+        visibility = if (subtitle.isNotEmpty()) View.VISIBLE else View.GONE
     }
+    
+    // Song count stays in parent_info
+    binding.parentInfo.text =
+        if (playlist.songs.isNotEmpty()) {
+            binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
+        } else {
+            binding.context.getString(R.string.def_song_count)
+        }
+}
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
