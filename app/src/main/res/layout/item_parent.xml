@@ -24,12 +24,30 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_mid_medium"
         android:textColor="@color/sel_selectable_text_primary"
-        app:layout_constraintBottom_toTopOf="@+id/parent_info"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintBottom_toTopOf="@+id/parent_subtitle"
         app:layout_constraintEnd_toStartOf="@+id/parent_menu"
         app:layout_constraintStart_toEndOf="@+id/parent_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="Artist" />
+        tools:text="INST.gb" />
+
+    <TextView
+        android:id="@+id/parent_subtitle"
+        style="@style/Widget.Auxio.TextView.Item.Secondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
+        android:textSize="10sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:alpha="0.7"
+        app:layout_constraintBottom_toTopOf="@+id/parent_info"
+        app:layout_constraintEnd_toStartOf="@+id/parent_menu"
+        app:layout_constraintStart_toEndOf="@+id/parent_image"
+        app:layout_constraintTop_toBottomOf="@+id/parent_name"
+        tools:text="⋆˙⋆ ˚｡⋆୨🪐*•̩̩͙ ✩ •̩̩͙* Description here" />
 
     <TextView
         android:id="@+id/parent_info"
@@ -40,8 +58,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/parent_menu"
         app:layout_constraintStart_toEndOf="@+id/parent_image"
-        app:layout_constraintTop_toBottomOf="@+id/parent_name"
-        tools:text="Info" />
+        app:layout_constraintTop_toBottomOf="@+id/parent_subtitle"
+        tools:text="10 songs" />
 
     <org.oxycblt.auxio.ui.RippleFixMaterialButton
         android:id="@+id/parent_menu"
