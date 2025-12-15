@@ -171,12 +171,12 @@ class PlaylistDetailFragment :
             return
         }
         val binding = requireBinding()
-        
+
         // Split the playlist name by newlines for title and subtitle
         val nameParts = playlist.name.resolve(requireContext()).split("\n", limit = 3)
         val title = nameParts.getOrNull(0) ?: ""
         val subtitle = nameParts.getOrNull(1) ?: ""
-        
+
         binding.detailToolbarTitle.text = title
         binding.detailEditToolbar.title = getString(R.string.fmt_editing, title)
 
@@ -192,13 +192,14 @@ class PlaylistDetailFragment :
 
         binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
         binding.detailName.text = title
-        
+
         // Set the subtitle and hide if empty
-        binding.detailSubtitle.apply {
+        // FIX: Added '?' before .apply because detailSubtitle might be null in some layouts
+        binding.detailSubtitle?.apply {
             text = subtitle
             isVisible = subtitle.isNotEmpty()
         }
-        
+
         // Nothing about a playlist is applicable to the sub-head text.
         binding.detailSubhead.isVisible = false
 
