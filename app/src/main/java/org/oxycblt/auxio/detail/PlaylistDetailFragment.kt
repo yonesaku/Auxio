@@ -193,15 +193,21 @@ class PlaylistDetailFragment :
         binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
         binding.detailName.text = title
 
-        // Set the subtitle and hide if empty
-        // FIX: Added '?' before .apply because detailSubtitle might be null in some layouts
-        binding.detailSubtitle?.apply {
-            text = subtitle
-            isVisible = subtitle.isNotEmpty()
+        // FIX: Check if detailSubtitle exists. If it does, use it.
+        // If it doesn't (is null), fall back to using detailSubhead so the text is visible.
+        if (binding.detailSubtitle != null) {
+            binding.detailSubtitle?.apply {
+                text = subtitle
+                isVisible = subtitle.isNotEmpty()
+            }
+            binding.detailSubhead.isVisible = false
+        } else {
+            // Fallback to Subhead if Subtitle view is missing
+            binding.detailSubhead.apply {
+                text = subtitle
+                isVisible = subtitle.isNotEmpty()
+            }
         }
-
-        // Nothing about a playlist is applicable to the sub-head text.
-        binding.detailSubhead.isVisible = false
 
         val songs = editedPlaylist ?: playlist.songs
         val durationMs = editedPlaylist?.sumOf { it.durationMs } ?: playlist.durationMs
