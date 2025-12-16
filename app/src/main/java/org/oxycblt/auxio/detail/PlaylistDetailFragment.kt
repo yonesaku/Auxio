@@ -172,10 +172,10 @@ class PlaylistDetailFragment :
         }
         val binding = requireBinding()
 
-        // Split the playlist name by newlines for title and subtitle
-        val nameParts = playlist.name.resolve(requireContext()).split("\n", limit = 3)
+        // Split the playlist name: first line is title, everything else is subtitle
+        val nameParts = playlist.name.resolve(requireContext()).split("\n", limit = 2)
         val title = nameParts.getOrNull(0) ?: ""
-        val subtitle = nameParts.getOrNull(1) ?: ""
+        val subtitle = nameParts.drop(1).joinToString("\n")
 
         binding.detailToolbarTitle.text = title
         binding.detailEditToolbar.title = getString(R.string.fmt_editing, title)
