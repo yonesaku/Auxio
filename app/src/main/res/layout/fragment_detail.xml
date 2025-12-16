@@ -80,7 +80,8 @@
 
                 <TextView
                     android:id="@+id/detail_subtitle"
-                    style="@style/Widget.Auxio.TextView.Secondary.Compact" android:layout_width="0dp"
+                    style="@style/Widget.Auxio.TextView.Secondary.Compact" 
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_medium"
                     android:textColor="?android:attr/textColorSecondary"
@@ -98,7 +99,6 @@
 
                 <TextView
                     android:id="@+id/detail_subhead"
-                    style="@style/Widget.Auxio.TextView.Secondary.Ellipsize"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_medium"
