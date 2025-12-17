@@ -11,8 +11,8 @@
     <org.oxycblt.auxio.ui.CoordinatorAppBarLayout
         android:id="@+id/detail_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
-        app:layout_behavior="org.oxycblt.auxio.detail.ContinuousAppBarLayoutBehavior"
         app:liftOnScroll="true"
+        app:layout_behavior="org.oxycblt.auxio.detail.ContinuousAppBarLayoutBehavior"
         app:liftOnScrollTargetViewId="@id/detail_recycler">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -38,118 +38,72 @@
 
                 <org.oxycblt.auxio.image.CoverView
                     android:id="@+id/detail_cover"
-                    style="@style/Widget.Auxio.Image.Large"
+                    style="@style/Widget.Auxio.Image.MidLarge"
                     app:enablePlaybackIndicator="false"
                     app:enableSelectionBadge="false"
                     android:layout_marginTop="@dimen/spacing_medium"
+                    android:layout_marginBottom="@dimen/spacing_medium"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
                     tools:ignore="ContentDescription" />
 
-                <LinearLayout
-                    android:id="@+id/detail_text_container"
+                <TextView
+                    android:id="@+id/detail_type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginStart="@dimen/spacing_medium"
+                    android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
+                    android:textColor="?attr/colorSecondary"
+                    app:layout_constraintBottom_toTopOf="@+id/detail_name"
                     app:layout_constraintStart_toEndOf="@+id/detail_cover"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/detail_cover">
+                    app:layout_constraintTop_toTopOf="@+id/detail_cover"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="Type" />
 
-                    <TextView
-                        android:id="@+id/detail_type"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
-                        android:textColor="?attr/colorSecondary"
-                        tools:text="Type" />
-
-                    <TextView
-                        android:id="@+id/detail_name"
-                        style="@style/Widget.Auxio.TextView.Detail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="2"
-                        android:singleLine="false"
-                        android:scrollHorizontally="false"
-                        tools:text="INST.gb" />
-
-                    <TextView
-                        android:id="@+id/detail_subtitle"
-                        style="@style/Widget.Auxio.TextView.Secondary.Compact"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="?android:attr/textColorSecondary"
-                        android:textSize="11sp"
-                        android:maxLines="10"
-                        android:minLines="1"
-                        android:ellipsize="end"
-                        android:singleLine="false"
-                        android:scrollHorizontally="false"
-                        android:alpha="0.8"
-                        tools:text="⋆˙⋆ ˚｡⋆୨🪐*•̩̩͙ ✩ •̩̩͙* Description That Should Wrap Now" />
-
-                    <TextView
-                        android:id="@+id/detail_subhead"
-                        style="@style/Widget.Auxio.TextView.Secondary.Ellipsize"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:textColor="?android:attr/textColorSecondary"
-                        android:textSize="8sp"
-                        android:maxLines="8"
-                        android:ellipsize="end"
-                        tools:text="Info A" />
-
-                    <TextView
-                        android:id="@+id/detail_info"
-                        style="@style/Widget.Auxio.TextView.Secondary.Base"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="?android:attr/textColorSecondary"
-                        tools:text="Info B" />
-
-                </LinearLayout>
-
-                <androidx.constraintlayout.widget.Barrier
-                    android:id="@+id/detail_header_barrier"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:barrierDirection="bottom"
-                    app:constraint_referenced_ids="detail_cover,detail_text_container" />
-
-                <org.oxycblt.auxio.ui.RippleFixMaterialButton
-                    android:id="@+id/detail_play_button"
-                    style="@style/Widget.Auxio.Button.Secondary"
+                <TextView
+                    android:id="@+id/detail_name"
+                    style="@style/Widget.Auxio.TextView.Primary.Compact"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_mid_medium"
-                    android:layout_marginEnd="@dimen/spacing_small"
-                    android:paddingStart="@dimen/spacing_medium"
-                    android:layout_marginBottom="@dimen/spacing_mid_medium"
-                    android:text="@string/lbl_play"
-                    app:icon="@drawable/ic_play_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/detail_shuffle_button"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    app:layout_constraintBottom_toTopOf="@+id/detail_subhead"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/detail_header_barrier"
-                    tools:ignore="RtlSymmetry" />
+                    app:layout_constraintStart_toEndOf="@+id/detail_cover"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_type"
+                    tools:text="Name" />
 
-                <org.oxycblt.auxio.ui.RippleFixMaterialButton
-                    android:id="@+id/detail_shuffle_button"
-                    style="@style/Widget.Auxio.Button.Primary"
+                <TextView
+                    android:id="@+id/detail_subhead"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_small"
-                    android:text="@string/lbl_shuffle"
-                    app:icon="@drawable/ic_shuffle_off_24"
-                    app:layout_constraintBottom_toBottomOf="@+id/detail_play_button"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textSize="8sp"
+                    android:lineSpacingMultiplier="1.2"
+                    app:layout_constraintBottom_toTopOf="@+id/detail_info"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/detail_play_button"
-                    app:layout_constraintTop_toTopOf="@+id/detail_play_button" />
+                    app:layout_constraintStart_toEndOf="@+id/detail_cover"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_name"
+                    tools:text="Info A" />
+
+                <TextView
+                    android:id="@+id/detail_info"
+                    style="@style/Widget.Auxio.TextView.Secondary.Compact"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:textColor="?android:attr/textColorSecondary"
+                    app:layout_constraintBottom_toBottomOf="@+id/detail_cover"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/detail_cover"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_subhead"
+                    tools:text="Info B" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.divider.MaterialDivider
@@ -208,6 +162,7 @@
                             app:icon="@drawable/ic_shuffle_off_24" />
 
                     </LinearLayout>
+
 
                 </com.google.android.material.appbar.MaterialToolbar>
 
