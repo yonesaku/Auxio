@@ -1,3 +1,4 @@
+// ========== FILE 1: PlaylistDetailFragment.kt ==========
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
@@ -37,16 +38,9 @@ import org.oxycblt.musikr.Song
 import org.oxycblt.musikr.playlist.m3u.M3U
 import timber.log.Timber as L
 
-/**
- * A [ListFragment] that shows information for a particular [Playlist].
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
 @AndroidEntryPoint
 class PlaylistDetailFragment :
     DetailFragment<Playlist, Song>(), PlaylistDetailListAdapter.Listener {
-    // Information about what playlist to display is initially within the navigation arguments
-    // as a UID, as that is the only safe way to parcel an playlist.
     private val args: PlaylistDetailFragmentArgs by navArgs()
     private val playlistListAdapter = PlaylistDetailListAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
@@ -72,8 +66,6 @@ class PlaylistDetailFragment :
                 musicModel.importPlaylist(uri, pendingImportTarget)
             }
 
-        // --- UI SETUP ---
-
         binding.detailEditToolbar.apply {
             setNavigationOnClickListener { detailModel.dropPlaylistEdit() }
             setOnMenuItemClickListener(this@PlaylistDetailFragment)
@@ -84,8 +76,6 @@ class PlaylistDetailFragment :
                 it.attachToRecyclerView(binding.detailRecycler)
             }
 
-        // --- VIEWMODEL SETUP ---
-        // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setPlaylist(args.playlistUid)
         collectImmediately(
             detailModel.currentPlaylist, detailModel.editedPlaylist, ::updatePlaylist)
@@ -116,8 +106,6 @@ class PlaylistDetailFragment :
 
     override fun onStart() {
         super.onStart()
-        // Once we add the destination change callback, we will receive another initialization call,
-        // so handle that by resetting the flag.
         requireNotNull(editNavigationListener) { "NavigationListener was not available" }
             .attach(findNavController())
     }
@@ -133,8 +121,6 @@ class PlaylistDetailFragment :
         binding.detailNormalToolbar.setOnMenuItemClickListener(null)
         touchHelper = null
         binding.detailRecycler.adapter = null
-        // Avoid possible race conditions that could cause a bad replace instruction to be consumed
-        // during list initialization and crash the app. Could happen if the user is fast enough.
         detailModel.playlistSongInstructions.consume()
         editNavigationListener = null
     }
@@ -166,19 +152,14 @@ class PlaylistDetailFragment :
 
     private fun updatePlaylist(playlist: Playlist?, editedPlaylist: List<Song>?) {
         if (playlist == null) {
-            // Playlist we were showing no longer exists.
             findNavController().navigateUp()
             return
         }
         val binding = requireBinding()
-
-        // Split the playlist name: first line is title, everything else is subtitle
-        val nameParts = playlist.name.resolve(requireContext()).split("\n", limit = 2)
-        val title = nameParts.getOrNull(0) ?: ""
-        val subtitle = nameParts.drop(1).joinToString("\n")
-
-        binding.detailToolbarTitle.text = title
-        binding.detailEditToolbar.title = getString(R.string.fmt_editing, title)
+        
+        val fullName = playlist.name.resolve(requireContext())
+        binding.detailToolbarTitle.text = fullName.split("\n").firstOrNull() ?: fullName
+        binding.detailEditToolbar.title = getString(R.string.fmt_editing, fullName.split("\n").firstOrNull() ?: fullName)
 
         if (editedPlaylist != null) {
             L.d("Binding edited playlist image")
@@ -191,27 +172,20 @@ class PlaylistDetailFragment :
         }
 
         binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
-        binding.detailName.text = title
+        
+        // Split playlist name: line 1 = title, rest = description
+        val nameParts = fullName.split("\n", limit = 2)
+        val title = nameParts.getOrNull(0) ?: fullName
+        val description = nameParts.getOrNull(1) ?: ""
 
-        // FIX: Check if detailSubtitle exists. If it does, use it.
-        // If it doesn't (is null), fall back to using detailSubhead so the text is visible.
-        if (binding.detailSubtitle != null) {
-            binding.detailSubtitle?.apply {
-                text = subtitle
-                isVisible = subtitle.isNotEmpty()
-            }
-            binding.detailSubhead.isVisible = false
-        } else {
-            // Fallback to Subhead if Subtitle view is missing
-            binding.detailSubhead.apply {
-                text = subtitle
-                isVisible = subtitle.isNotEmpty()
-            }
+        binding.detailName.text = title
+        binding.detailSubhead.apply {
+            text = description
+            isVisible = description.isNotEmpty()
         }
 
         val songs = editedPlaylist ?: playlist.songs
         val durationMs = editedPlaylist?.sumOf { it.durationMs } ?: playlist.durationMs
-        // The song count of the playlist maps to the info text.
         binding.detailInfo.text =
             if (songs.isNotEmpty()) {
                 binding.context.getString(
@@ -390,7 +364,6 @@ class PlaylistDetailFragment :
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        // Prefer songs that are playing from this playlist.
         playlistListAdapter.setPlaying(
             song.takeIf { parent == detailModel.currentPlaylist.value }, isPlaying)
     }
