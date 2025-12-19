@@ -1,21 +1,3 @@
-/*
- * Copyright (c) 2022 Auxio Project
- * ViewHolders.kt is part of Auxio.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
- 
 package org.oxycblt.auxio.list.recycler
 
 import android.annotation.SuppressLint
@@ -281,31 +263,31 @@ class PlaylistViewHolder private constructor(private val binding: ItemParentBind
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(playlist: Playlist, listener: SelectableListListener<Playlist>) {
-    listener.bind(playlist, this, menuButton = binding.parentMenu)
-    binding.parentImage.bind(playlist)
-    
-    // Split the playlist name by newlines
-    val nameParts = playlist.name.resolve(binding.context).split("\n", limit = 3)
-    
-    // First line is the title
-    binding.parentName.text = nameParts.getOrNull(0) ?: ""
-    
-    // Second line (if exists) is the subtitle/description
-    val subtitle = nameParts.getOrNull(1) ?: ""
-    binding.parentSubtitle.apply {
-        text = subtitle
-        // Hide the subtitle view if there's no subtitle
-        visibility = if (subtitle.isNotEmpty()) View.VISIBLE else View.GONE
-    }
-    
-    // Song count stays in parent_info
-    binding.parentInfo.text =
-        if (playlist.songs.isNotEmpty()) {
-            binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
+        listener.bind(playlist, this, menuButton = binding.parentMenu)
+        binding.parentImage.bind(playlist)
+        
+        // --- FIX START ---
+        // Get the full name string
+        val fullName = playlist.name.resolve(binding.context)
+        // Check for the new line character
+        val splitIndex = fullName.indexOf('\n')
+        
+        // If there is a newline, cut the string off right before it.
+        // If not, use the whole string.
+        binding.parentName.text = if (splitIndex != -1) {
+             fullName.substring(0, splitIndex) 
         } else {
-            binding.context.getString(R.string.def_song_count)
+             fullName
         }
-}
+        // --- FIX END ---
+
+        binding.parentInfo.text =
+            if (playlist.songs.isNotEmpty()) {
+                binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
+            } else {
+                binding.context.getString(R.string.def_song_count)
+            }
+    }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
