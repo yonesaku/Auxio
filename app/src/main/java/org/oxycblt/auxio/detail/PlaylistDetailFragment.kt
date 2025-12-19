@@ -1,7 +1,11 @@
-// ========== FILE 1: PlaylistDetailFragment.kt ==========
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -172,9 +176,51 @@ class PlaylistDetailFragment :
             return
         }
         val binding = requireBinding()
-        binding.detailToolbarTitle.text = playlist.name.resolve(requireContext())
-        binding.detailEditToolbar.title =
-            getString(R.string.fmt_editing, playlist.name.resolve(requireContext()))
+
+        // --- TITLE AND DESCRIPTION LOGIC START ---
+        val fullText = playlist.name.resolve(requireContext())
+        val splitIndex = fullText.indexOf('\n')
+
+        if (splitIndex != -1) {
+            // If there is a newline, we treat the first line as Title, rest as Description.
+
+            val titleOnly = fullText.substring(0, splitIndex)
+            
+            // 1. Update Toolbars (Use only the title so it fits nicely)
+            binding.detailToolbarTitle.text = titleOnly
+            binding.detailEditToolbar.title = getString(R.string.fmt_editing, titleOnly)
+
+            // 2. Update the Big Header (Use rich text to style Title vs Description)
+            val spannable = SpannableString(fullText)
+
+            // STYLE: Make the Title (first line) Bold
+            spannable.setSpan(
+                StyleSpan(android.graphics.Typeface.BOLD),
+                0, splitIndex,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            // STYLE: Make the Description (rest) Smaller (0.65x) and Gray
+            spannable.setSpan(
+                RelativeSizeSpan(0.65f),
+                splitIndex, fullText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            spannable.setSpan(
+                ForegroundColorSpan(android.graphics.Color.GRAY),
+                splitIndex, fullText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            binding.detailName.text = spannable
+        } else {
+            // No newline found? Default behavior.
+            binding.detailToolbarTitle.text = fullText
+            binding.detailEditToolbar.title =
+                getString(R.string.fmt_editing, fullText)
+            binding.detailName.text = fullText
+        }
+        // --- TITLE AND DESCRIPTION LOGIC END ---
 
         if (editedPlaylist != null) {
             L.d("Binding edited playlist image")
@@ -187,14 +233,6 @@ class PlaylistDetailFragment :
         }
 
         binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
-        
-        // Use HTML formatting to support <small> tags for smaller text
-        binding.detailName.text = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            android.text.Html.fromHtml(playlist.name.resolve(binding.context), android.text.Html.FROM_HTML_MODE_COMPACT)
-        } else {
-            @Suppress("DEPRECATION")
-            android.text.Html.fromHtml(playlist.name.resolve(binding.context))
-        }
         
         // Nothing about a playlist is applicable to the sub-head text.
         binding.detailSubhead.isVisible = false
