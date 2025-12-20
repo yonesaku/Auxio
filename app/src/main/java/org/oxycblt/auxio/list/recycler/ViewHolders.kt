@@ -265,22 +265,7 @@ class PlaylistViewHolder private constructor(private val binding: ItemParentBind
     fun bind(playlist: Playlist, listener: SelectableListListener<Playlist>) {
         listener.bind(playlist, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(playlist)
-        
-        // --- FIX START ---
-        // Get the full name string
-        val fullName = playlist.name.resolve(binding.context)
-        // Check for the new line character
-        val splitIndex = fullName.indexOf('\n')
-        
-        // If there is a newline, cut the string off right before it.
-        // If not, use the whole string.
-        binding.parentName.text = if (splitIndex != -1) {
-             fullName.substring(0, splitIndex) 
-        } else {
-             fullName
-        }
-        // --- FIX END ---
-
+        binding.parentName.text = playlist.name.resolve(binding.context)
         binding.parentInfo.text =
             if (playlist.songs.isNotEmpty()) {
                 binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
