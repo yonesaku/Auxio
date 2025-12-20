@@ -343,7 +343,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             context.getString(R.string.desc_album_cover, album.name),
             R.drawable.ic_album_24)
     }
-
     /**
      * Bind an [Artist]'s image to this view.
      *
